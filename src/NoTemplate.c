@@ -6,29 +6,29 @@
 
 int main(int argc, char* argv[]){
     printf("Template built-in test for repository testproject1\n");
-    List* my_list = new_list();
+    LIST* List = NewList();
 
-    uint32_t test_vector[] = {
+    uint32_t TestVector[] = {
         0x40133333, // 2.3 (2.29999) floats' binary representation
         0x00009abc,
         0x56789abc,
         0x01234567
     };
 
-    int a = 0x01234567;
-    insert(my_list, OPAQUE_DATA(int, a));
-    insert(my_list, OPAQUE_DATA(int, 0x56789abc));
-    insert(my_list, OPAQUE_DATA(int, 0x9abc));
-    insert(my_list, OPAQUE_DATA(float, 2.3));
+    int SomeVar = 0x01234567;
+    ListInsertPrimitiveData(List, CAST_OPAQUE_DATA(int, SomeVar));
+    ListInsertPrimitiveData(List, CAST_OPAQUE_DATA(int, 0x56789abc));
+    ListInsertPrimitiveData(List, CAST_OPAQUE_DATA(int, 0x9abc));
+    ListInsertPrimitiveData(List, CAST_OPAQUE_DATA(float, 2.3));
 
     uint32_t obj;
-    int ind = 0;
-    ITERATE(my_list, uint32_t, obj) {
-        assert(obj == test_vector[ind]);
-        ind++;
+    int Index = 0;
+    ITERATE_PRIMITIVE_DATA_TYPE(List, uint32_t, obj) {
+        assert(obj == TestVector[Index]);
+        Index++;
     }
 
-    free_list(my_list);
+    ListFreePrimitiveData(List);
 
     return 0;
 }

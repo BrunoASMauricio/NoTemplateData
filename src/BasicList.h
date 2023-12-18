@@ -3,24 +3,36 @@
 
 #include "Common.h"
 
-TYPE_STRUCT(ListEl){
-    opaque_data data;
-    ListEl* next;
+// Primitive Data element
+TYPE_STRUCT(PRIMITIVE_DATA_ELEMENT){
+    PRIMITIVE_DATA_ELEMENT* Next;
+    OPAQUE_DATA             Data;
 };
 
-TYPE_STRUCT(List){
-    ListEl* head;
+// Memory Based Data element
+TYPE_STRUCT(MEMORY_DATA_ELEMENT){
+    MEMORY_DATA_ELEMENT*    Next;
+    OPAQUE_MEMORY           Data;
+};
+
+TYPE_STRUCT(LIST){
+    void* Head;
 };
 
 
-#define ITERATE(list, type, var)                                    \
-for (ListEl* iter_el = ((list)->head);                              \
-    (iter_el) && ((var) = ((iter_el)->data.GLUE(type, _val)), 1);   \
-        (iter_el) = (iter_el->next))
+#define ITERATE_PRIMITIVE_DATA_TYPE(List, Type, Var)                \
+for (PRIMITIVE_DATA_ELEMENT* DataElement = ((List)->Head);          \
+    (DataElement) && ((Var) = ((DataElement)->Data.GLUE(Type, Val)), 1);   \
+        (DataElement) = (DataElement->Next))
 
-void insert(List* iter, opaque_data obj);
-List* new_list();
-void free_list(List* list);
+
+void ListInsertPrimitiveData(LIST* List, OPAQUE_DATA NewData);
+void ListInsertMemoryData(LIST* List, OPAQUE_DATA NewData);
+
+
+LIST* NewList();
+
+void ListFreePrimitiveData(LIST* List);
 
 
 #endif

@@ -3,31 +3,48 @@
 
 #include <stdint.h>
 
-typedef union{
-    uint8_t    uint8_t_val;
-    uint16_t   uint16_t_val;
-    uint32_t   uint32_t_val;
-    uint64_t   uint64_t_val;
+#ifndef AllocGenericMemory
+#define AllocGenericMemory(BaseAddress) malloc(BaseAddress)
+#endif
 
-    int8_t    int8_t_val;
-    int16_t   int16_t_val;
-    int32_t   int32_t_val;
-    int64_t   int64_t_val;
+#ifndef FeeGenericMemory
+#define FeeGenericMemory(BaseAddress) free(BaseAddress)
+#endif
 
-    int    int_val;
-    float  float_val;
-    double double_val;
-
-    void* pointer;
-}opaque_data;
-
-#define GLUE(X, Y) X ## Y
-
-#define OPAQUE_DATA(type, data) \
-(opaque_data){ .GLUE(type, _val) = data}
 
 #define TYPE_STRUCT(NAME) \
 typedef struct NAME NAME; \
 struct NAME
+
+#define ALLOC_STRUCT(TYPE, VAR) \
+TYPE* VAR = (TYPE*)AllocGenericMemory(sizeof(TYPE))
+
+
+typedef union{
+    uint8_t     uint8_tVal;
+    uint16_t    uint16_tVal;
+    uint32_t    uint32_tVal;
+    uint64_t    uint64_tVal;
+    int8_t      int8_tVal;
+    int16_t     int16_tVal;
+    int32_t     int32_tVal;
+    int64_t     int64_tVal;
+    int         intVal;
+    float       floatVal;
+    double      doubleVal;
+
+    void* pointer;
+}OPAQUE_DATA;
+
+TYPE_STRUCT(OPAQUE_MEMORY){
+    size_t size;
+    void*  data;
+};
+
+#define GLUE(X, Y) X ## Y
+
+#define CAST_OPAQUE_DATA(type, data) \
+(OPAQUE_DATA){ .GLUE(type, Val) = data}
+
 
 #endif

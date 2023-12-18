@@ -2,32 +2,31 @@
 
 #include "BasicList.h"
 
-List* new_list() {
-    List* list = (List*)malloc(sizeof(List));
-    list->head = NULL;
-    return list;
+LIST* NewList() {
+    ALLOC_STRUCT(LIST, NewList);
+    NewList->Head = NULL;
+    return NewList;
 }
 
+void ListInsertPrimitiveData(LIST* List, OPAQUE_DATA NewData) {
+    ALLOC_STRUCT(PRIMITIVE_DATA_ELEMENT, NewLink);
+    NewLink->Data = NewData;
 
-void insert(List* list, opaque_data obj) {
-    ListEl* new_link = (ListEl*)malloc(sizeof(ListEl));
-    new_link->data = obj;
-
-    if (list->head == NULL) {
-        new_link->next = NULL;
-        list->head = new_link;
+    if (List->Head == NULL) {
+        NewLink->Next   = NULL;
+        List->Head      = NewLink;
     } else {
-        new_link->next  = list->head;
-        list->head      = new_link;
+        NewLink->Next   = List->Head;
+        List->Head      = NewLink;
     }
 }
 
-void free_list(List* list) {
-    ListEl* current = list->head;
-    while(current != NULL) {
-        ListEl* next = current->next;
-        free(current);
-        current = next;
+void ListFreePrimitiveData(LIST* List) {
+    PRIMITIVE_DATA_ELEMENT* Current = List->Head;
+    while(Current != NULL) {
+        PRIMITIVE_DATA_ELEMENT* Next = Current->Next;
+        FeeGenericMemory(Current);
+        Current = Next;
     }
-    free(list);
+    FeeGenericMemory(List);
 }
