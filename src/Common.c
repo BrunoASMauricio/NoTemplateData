@@ -1,10 +1,14 @@
 #include "Common.h"
 
-OPAQUE_MEMORY* AllocateOpaqueMemory(size_t Size) {
-    ALLOC_STRUCT(OPAQUE_MEMORY, Memory);
+void SetupOpaqueMemory(OPAQUE_MEMORY* Memory, size_t Size) {
     Memory->Size = Size;
     Memory->Data = AllocGenericMemory(Memory->Size);
     Memory->Allocated = TRUE;
+}
+
+OPAQUE_MEMORY* AllocateOpaqueMemory(size_t Size) {
+    ALLOC_STRUCT(OPAQUE_MEMORY, Memory);
+    SetupOpaqueMemory(Memory, Size);
     return Memory;
 }
 

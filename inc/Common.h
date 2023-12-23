@@ -81,10 +81,10 @@ TYPE_STRUCT(OPAQUE_MEMORY){
     void*   Data;
 };
 
+void SetupOpaqueMemory(OPAQUE_MEMORY* Memory, size_t Size);
+OPAQUE_MEMORY* AllocateOpaqueMemory(size_t Size);
 
 void ClearOpaqueMemory(OPAQUE_MEMORY* Memory);
-
-OPAQUE_MEMORY* AllocateOpaqueMemory(size_t Size);
 
 /* Free data in Memory
  * If Allocated = True, Datahas a freeable pointer
