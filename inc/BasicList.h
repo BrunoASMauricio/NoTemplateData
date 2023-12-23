@@ -35,6 +35,7 @@ TYPE_STRUCT(LIST){
     LIST_DATA_TYPE InsertedTypes;
     #endif
     void* Head;
+    size_t Length;
 };
 
 

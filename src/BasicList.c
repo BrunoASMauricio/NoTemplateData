@@ -26,6 +26,7 @@ static void ValidateInsertion(LIST* List, LIST_DATA_TYPE DataType) {
 LIST* NewList(void) {
     ALLOC_STRUCT(LIST, NewList);
     NewList->Head = NULL;
+    NewList->Length = 0;
     return NewList;
 }
 
@@ -39,6 +40,7 @@ static void AddListElement(LIST* List, void* _NewLink) {
         NewLink->Next   = List->Head;
         List->Head      = NewLink;
     }
+    List->Length += 1;
 }
 
 void MemoryListInsert(LIST* List, OPAQUE_MEMORY NewMemory) {
