@@ -68,7 +68,7 @@ typedef union{
     float       Val_float;
     double      Val_double;
 
-    void* pointer;
+    void*       Val_pointer;
 }OPAQUE_DATA;
 
 #define GENERIC_DATA(Type, Data) \
@@ -80,6 +80,11 @@ TYPE_STRUCT(OPAQUE_MEMORY){
     BOOLEAN Allocated;
     void*   Data;
 };
+
+
+void ClearOpaqueMemory(OPAQUE_MEMORY* Memory);
+
+OPAQUE_MEMORY* AllocateOpaqueMemory(size_t Size);
 
 /* Free data in Memory
  * If Allocated = True, Datahas a freeable pointer

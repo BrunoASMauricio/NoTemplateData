@@ -30,7 +30,7 @@ LIST* NewList(void) {
 }
 
 
-static void SetupListElement(LIST* List, void* _NewLink) {
+static void AddListElement(LIST* List, void* _NewLink) {
     NO_DATA_ELEMENT* NewLink = _NewLink;
     if (List->Head == NULL) {
         NewLink->Next   = NULL;
@@ -45,7 +45,7 @@ void MemoryListInsert(LIST* List, OPAQUE_MEMORY NewMemory) {
     ALLOC_STRUCT(MEMORY_DATA_ELEMENT, NewLink);
     NewLink->Memory = NewMemory;
 
-    SetupListElement(List, NewLink);
+    AddListElement(List, NewLink);
 
     #ifdef SANITY_CHECK
     ValidateInsertion(List, MemoryDataType);
@@ -56,7 +56,7 @@ void DataListInsert(LIST* List, OPAQUE_DATA NewData) {
     ALLOC_STRUCT(PRIMITIVE_DATA_ELEMENT, NewLink);
     NewLink->Data = NewData;
 
-    SetupListElement(List, NewLink);
+    AddListElement(List, NewLink);
 
     #ifdef SANITY_CHECK
     ValidateInsertion(List, PrimitiveDataType);
@@ -77,7 +77,7 @@ void FreeMemoryList(LIST* List) {
     MEMORY_DATA_ELEMENT* Current = List->Head;
     while(Current != NULL) {
         MEMORY_DATA_ELEMENT* Next = Current->Next;
-        FreeOpaqueMemory(&(Current->Memory));
+        ClearOpaqueMemory(&(Current->Memory));
         FeeGenericMemory(Current);
         Current = Next;
     }
