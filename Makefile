@@ -54,7 +54,7 @@ debug: build $(TARGET)
 	gdb $(TARGET)
 
 memory: build $(TARGET)
-	valgrind -s --leak-check=full --track-origins=yes $(TARGET)
+	valgrind -s --show-leak-kinds=all --leak-check=full --track-origins=yes $(TARGET)
 
 all: run
 
