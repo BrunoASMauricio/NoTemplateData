@@ -19,10 +19,10 @@ void TestPrimitiveData(void) {
     };
 
     uint64_t SomeVar = 0x0123456789abcdef;
-    ListInsertPrimitiveData(DataList, GENERIC_DATA(uint64_t, SomeVar));
-    ListInsertPrimitiveData(DataList, GENERIC_DATA(int, 0x56789abc));
-    ListInsertPrimitiveData(DataList, GENERIC_DATA(int, 0x9abc));
-    ListInsertPrimitiveData(DataList, GENERIC_DATA(float, 2.3));
+    DataListInsert(DataList, GENERIC_DATA(uint64_t, SomeVar));
+    DataListInsert(DataList, GENERIC_DATA(int, 0x56789abc));
+    DataListInsert(DataList, GENERIC_DATA(int, 0x9abc));
+    DataListInsert(DataList, GENERIC_DATA(float, 2.3));
 
     uint64_t StoredData;
     int Index = 0;
@@ -31,7 +31,7 @@ void TestPrimitiveData(void) {
         Index++;
     }
 
-    ListFreePrimitiveData(DataList);
+    FreeDataList(DataList);
 }
 
 void TestMemoryData(void) {
@@ -60,12 +60,12 @@ void TestMemoryData(void) {
 
     // Insert static memory (backwards so validation can use normal order)
     for (int i = 3; i >= 0; i--) {
-        ListInsertMemoryData(MemoryList, StaticTestVector[i]);
+        MemoryListInsert(MemoryList, StaticTestVector[i]);
     }
 
     // Insert dynamic memory (backwards so validation can use normal order)
     for (int i = 3; i >= 0; i--) {
-        ListInsertMemoryData(MemoryList, DynTestVector[i]);
+        MemoryListInsert(MemoryList, DynTestVector[i]);
     }
 
     // Validate memory
@@ -78,7 +78,7 @@ void TestMemoryData(void) {
         Index = Index % 4;
     }
 
-    ListFreeMemoryData(MemoryList);
+    FreeMemoryList(MemoryList);
 }
 
 int main(void){

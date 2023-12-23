@@ -41,7 +41,7 @@ static void SetupListElement(LIST* List, void* _NewLink) {
     }
 }
 
-void ListInsertMemoryData(LIST* List, OPAQUE_MEMORY NewMemory) {
+void MemoryListInsert(LIST* List, OPAQUE_MEMORY NewMemory) {
     ALLOC_STRUCT(MEMORY_DATA_ELEMENT, NewLink);
     NewLink->Memory = NewMemory;
 
@@ -52,7 +52,7 @@ void ListInsertMemoryData(LIST* List, OPAQUE_MEMORY NewMemory) {
     #endif
 }
 
-void ListInsertPrimitiveData(LIST* List, OPAQUE_DATA NewData) {
+void DataListInsert(LIST* List, OPAQUE_DATA NewData) {
     ALLOC_STRUCT(PRIMITIVE_DATA_ELEMENT, NewLink);
     NewLink->Data = NewData;
 
@@ -63,7 +63,7 @@ void ListInsertPrimitiveData(LIST* List, OPAQUE_DATA NewData) {
     #endif
 }
 
-void ListFreePrimitiveData(LIST* List) {
+void FreeDataList(LIST* List) {
     PRIMITIVE_DATA_ELEMENT* Current = List->Head;
     while(Current != NULL) {
         PRIMITIVE_DATA_ELEMENT* Next = Current->Next;
@@ -73,7 +73,7 @@ void ListFreePrimitiveData(LIST* List) {
     FeeGenericMemory(List);
 }
 
-void ListFreeMemoryData(LIST* List) {
+void FreeMemoryList(LIST* List) {
     MEMORY_DATA_ELEMENT* Current = List->Head;
     while(Current != NULL) {
         MEMORY_DATA_ELEMENT* Next = Current->Next;

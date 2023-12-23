@@ -50,11 +50,11 @@ for (MEMORY_DATA_ELEMENT* DataElement = ((List)->Head);   \
 
 LIST* NewList(void);
 
-void ListInsertPrimitiveData(LIST* List, OPAQUE_DATA NewData);
-void ListInsertMemoryData(LIST* List, OPAQUE_MEMORY NewMemory);
+void DataListInsert(LIST* List, OPAQUE_DATA NewData);
+void MemoryListInsert(LIST* List, OPAQUE_MEMORY NewMemory);
 
-void ListFreePrimitiveData(LIST* List);
-void ListFreeMemoryData(LIST* List);
+void FreeDataList(LIST* List);
+void FreeMemoryList(LIST* List);
 
 
 #endif

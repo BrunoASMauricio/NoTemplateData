@@ -131,27 +131,27 @@ int main(void){
     LIST* IntMemoryList = NewList();
     LIST* FloatMemoryList = NewList();
 
-    ListInsertPrimitiveData(IntMemoryList, GENERIC_DATA(int, 1));
-    ListInsertPrimitiveData(IntMemoryList, GENERIC_DATA(int, 2));
-    ListInsertPrimitiveData(IntMemoryList, GENERIC_DATA(int, 3));
-    ListInsertPrimitiveData(IntMemoryList, GENERIC_DATA(int, 4));
+    DataListInsert(IntMemoryList, GENERIC_DATA(int, 1));
+    DataListInsert(IntMemoryList, GENERIC_DATA(int, 2));
+    DataListInsert(IntMemoryList, GENERIC_DATA(int, 3));
+    DataListInsert(IntMemoryList, GENERIC_DATA(int, 4));
 
     int IntData;
     ITERATE_PRIMITIVE_DATA_TYPE(IntMemoryList, int, IntData) {
         printf("%d\n", IntData);
     }
 
-    ListInsertPrimitiveData(FloatMemoryList, GENERIC_DATA(float, 1));
-    ListInsertPrimitiveData(FloatMemoryList, GENERIC_DATA(float, 2));
-    ListInsertPrimitiveData(FloatMemoryList, GENERIC_DATA(float, 3));
-    ListInsertPrimitiveData(FloatMemoryList, GENERIC_DATA(float, 4));
+    DataListInsert(FloatMemoryList, GENERIC_DATA(float, 1));
+    DataListInsert(FloatMemoryList, GENERIC_DATA(float, 2));
+    DataListInsert(FloatMemoryList, GENERIC_DATA(float, 3));
+    DataListInsert(FloatMemoryList, GENERIC_DATA(float, 4));
 
     float FloatData;
     ITERATE_PRIMITIVE_DATA_TYPE(FloatMemoryList, float, FloatData) {
         printf("%f\n", FloatData);
     }
 
-    ListFreePrimitiveData(IntMemoryList);
-    ListFreePrimitiveData(FloatMemoryList);
+    FreeDataList(IntMemoryList);
+    FreeDataList(FloatMemoryList);
 }
 ```
