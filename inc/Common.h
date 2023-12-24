@@ -48,6 +48,11 @@ struct NAME
 #define ALLOC_STRUCT(TYPE, VAR) \
 TYPE* VAR = (TYPE*)AllocGenericMemory(sizeof(TYPE))
 
+#ifdef SANITY_CHECK
+#define SANITY_ASSERT(Condition) Assert(Condition)
+#else
+#define SANITY_ASSERT(Condition)
+#endif
 
 //                      Compiler wrappers
 #define RUN_BEFORE_MAIN __attribute__((constructor))
@@ -92,8 +97,7 @@ void ClearOpaqueMemory(OPAQUE_MEMORY* Memory);
 void FreeOpaqueMemory(OPAQUE_MEMORY* Memory);
 
 #define GENERIC_MEMORY(Size, Data) \
-((OPAQUE_MEMORY){Size, Data})
-
+((OPAQUE_MEMORY){Size, FALSE, Data})
 
 
 #endif

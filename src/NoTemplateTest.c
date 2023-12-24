@@ -12,10 +12,10 @@ void TestPrimitiveData(void) {
     LIST* DataList = NewList();
 
     uint64_t TestVector[] = {
-        0x0000000040133333, // 2.3 (2.29999) floats' 64 bit representation
-        0x0000000000009abc,
+        0x0123456789abcdef,
         0x0000000056789abc,
-        0x0123456789abcdef
+        0x0000000000009abc,
+        0x0000000040133333 // 2.3 (2.29999) floats' 64 bit representation
     };
 
     uint64_t SomeVar = 0x0123456789abcdef;
@@ -26,6 +26,7 @@ void TestPrimitiveData(void) {
 
     uint64_t StoredData;
     int Index = 0;
+
     ITERATE_PRIMITIVE_DATA_TYPE(DataList, uint64_t, StoredData) {
         Assert(StoredData == TestVector[Index]);
         Index++;
@@ -59,20 +60,20 @@ void TestMemoryData(void) {
     }
 
     // Insert static memory (backwards so validation can use normal order)
-    for (int i = 3; i >= 0; i--) {
+    for (int i = 0; i < 4; i++) {
         MemoryListInsert(MemoryList, StaticTestVector[i]);
     }
 
     // Insert dynamic memory (backwards so validation can use normal order)
-    for (int i = 3; i >= 0; i--) {
+    for (int i = 0; i < 4; i++) {
         MemoryListInsert(MemoryList, DynTestVector[i]);
     }
 
     // Validate memory
-    OPAQUE_MEMORY Memory;
+    OPAQUE_MEMORY ListMemory;
     int Index = 0;
-    ITERATE_MEMORY_TYPE(MemoryList, Memory) {
-        Assert(0 == memcmp(Memory.Data, StaticTestVector[Index].Data, Memory.Size));
+    ITERATE_MEMORY_TYPE(MemoryList, ListMemory) {
+        Assert(0 == memcmp(ListMemory.Data, StaticTestVector[Index].Data, ListMemory.Size));
         Index++;
         // Cycle back, we reuse the StaticTestVector
         Index = Index % 4;

@@ -2,8 +2,17 @@
 
 void SetupOpaqueMemory(OPAQUE_MEMORY* Memory, size_t Size) {
     Memory->Size = Size;
-    Memory->Data = AllocGenericMemory(Memory->Size);
-    Memory->Allocated = TRUE;
+    if (Size > 0) {
+        Memory->Data = AllocGenericMemory(Memory->Size);
+        if (Memory->Data != NULL) {
+            Memory->Allocated = TRUE;
+            return;
+        }
+    }
+    // error fall through
+    Memory->Data = NULL;
+    Memory->Allocated = FALSE;
+
 }
 
 OPAQUE_MEMORY* AllocateOpaqueMemory(size_t Size) {

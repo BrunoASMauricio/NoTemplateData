@@ -25,20 +25,28 @@ static void ValidateInsertion(LIST* List, LIST_DATA_TYPE DataType) {
 
 LIST* NewList(void) {
     ALLOC_STRUCT(LIST, NewList);
-    NewList->Head = NULL;
+    NewList->Head   = NULL;
+    NewList->Tail   = NULL;
     NewList->Length = 0;
+
+    #ifdef SANITY_CHECK
+    NewList->InsertedTypes = NoType;
+    #endif
+
     return NewList;
 }
 
 
 static void AddListElement(LIST* List, void* _NewLink) {
     NO_DATA_ELEMENT* NewLink = _NewLink;
+    NO_DATA_ELEMENT* Tail = List->Tail;
     if (List->Head == NULL) {
         NewLink->Next   = NULL;
         List->Head      = NewLink;
+        List->Tail      = NewLink;
     } else {
-        NewLink->Next   = List->Head;
-        List->Head      = NewLink;
+        Tail->Next = NewLink;
+        List->Tail = NewLink;
     }
     List->Length += 1;
 }
@@ -46,6 +54,7 @@ static void AddListElement(LIST* List, void* _NewLink) {
 void MemoryListInsert(LIST* List, OPAQUE_MEMORY NewMemory) {
     ALLOC_STRUCT(MEMORY_DATA_ELEMENT, NewLink);
     NewLink->Memory = NewMemory;
+    NewLink->Next = NULL;
 
     AddListElement(List, NewLink);
 
@@ -57,6 +66,7 @@ void MemoryListInsert(LIST* List, OPAQUE_MEMORY NewMemory) {
 void DataListInsert(LIST* List, OPAQUE_DATA NewData) {
     ALLOC_STRUCT(PRIMITIVE_DATA_ELEMENT, NewLink);
     NewLink->Data = NewData;
+    NewLink->Next = NULL;
 
     AddListElement(List, NewLink);
 
