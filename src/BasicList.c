@@ -1,10 +1,11 @@
 #include <stdlib.h>
+#include <assert.h>
 
 #include "Common.h"
 #include "BasicList.h"
 
 #ifdef SANITY_CHECK
-#include <assert.h>
+#include <stdint.h>
 #include <stddef.h>
 // Validate our usage of NO_DATA_ELEMENT (Next is at the same offset everywhere)
 static_assert(offsetof(NO_DATA_ELEMENT, Next) ==
@@ -73,6 +74,89 @@ void DataListInsert(LIST* List, OPAQUE_DATA NewData) {
     #ifdef SANITY_CHECK
     ValidateInsertion(List, PrimitiveDataType);
     #endif
+}
+
+OPAQUE_MEMORY* SerializeDataList(LIST* List, size_t ElementSize) {
+    OPAQUE_MEMORY* Total = AllocateOpaqueMemory(ElementSize * List->Length);
+    uint8_t* MemoryIndex;
+
+    MemoryIndex = (uint8_t*)Total->Data;
+
+    uintptr_t Element;
+    ITERATE_PRIMITIVE_DATA_TYPE(List, uintptr_t, Element) {
+        int Start, Direction;
+        if (BYTE_ORDER == LITTLE_ENDIAN) {
+            Start = 0;
+            Direction = 1;
+        } else {
+            assert(0);
+            Start = sizeof(OPAQUE_DATA) - 1;
+            Direction = -1;
+        }
+        // 0 -> ElementSize
+        for(int Ind = Start; (Ind < (int)ElementSize && Ind >= 0); Ind += Direction) {
+            MemoryIndex[Ind] = Element & 0xFF;
+            Element = Element >> 8;
+        }
+        MemoryIndex += ElementSize;
+    }
+
+    return Total;
+}
+
+LIST* DeSerializeDataList(OPAQUE_MEMORY* Memory, size_t ElementSize) {
+    uint8_t* MemoryIndex = Memory->Data;
+    intptr_t Field;
+    LIST* List = NewList();
+    while (MemoryIndex < (uint8_t*)Memory->Data + Memory->Size) {
+        // Assume same endianness
+        CopyAVGMemory(&Field, MemoryIndex, ElementSize);
+        DataListInsert(List, GENERIC_DATA(intptr_t, Field));
+        MemoryIndex += ElementSize;
+    }
+    SANITY_ASSERT(MemoryIndex == (uint8_t*)Memory->Data + Memory->Size);
+    return List;
+}
+
+size_t SerializedMemoryListSize(LIST* List) {
+    size_t TotalSize = 0;
+    OPAQUE_MEMORY Element;
+    ITERATE_MEMORY_TYPE(List, Element) {
+        TotalSize += sizeof(Element.Size);
+        TotalSize += Element.Size;
+    }
+    return TotalSize;
+}
+
+LIST* DeSerializeMemoryList(OPAQUE_MEMORY* Memory) {
+    uint8_t* MemoryIndex = Memory->Data;
+    size_t FieldSize;
+    LIST* List = NewList();
+    while (MemoryIndex < (uint8_t*)Memory->Data + Memory->Size) {
+        // Assume same endianness
+        CopyAVGMemory(&FieldSize, MemoryIndex, sizeof(FieldSize));
+        MemoryIndex += sizeof(FieldSize);
+        MemoryListInsert(List, DuplicateIntoOpaqueMemory(MemoryIndex, FieldSize));
+        MemoryIndex += FieldSize;
+    }
+    SANITY_ASSERT(MemoryIndex == (uint8_t*)Memory->Data + Memory->Size);
+    return List;
+}
+
+OPAQUE_MEMORY* SerializeMemoryList(LIST* List) {
+    OPAQUE_MEMORY* Total = AllocateOpaqueMemory(SerializedMemoryListSize(List));
+
+    uint8_t* MemoryIndex;
+    MemoryIndex = (uint8_t*)Total->Data;
+
+    OPAQUE_MEMORY Element;
+    ITERATE_MEMORY_TYPE(List, Element) {
+        CopyAVGMemory(MemoryIndex, &(Element.Size), sizeof(Element.Size));
+        MemoryIndex += sizeof(Element.Size);
+        CopyAVGMemory(MemoryIndex, Element.Data, Element.Size);
+        MemoryIndex += Element.Size;
+    }
+    return Total;
 }
 
 void FreeDataList(LIST* List) {

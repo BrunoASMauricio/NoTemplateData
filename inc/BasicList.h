@@ -55,6 +55,13 @@ LIST* NewList(void);
 void DataListInsert(LIST* List, OPAQUE_DATA NewData);
 void MemoryListInsert(LIST* List, OPAQUE_MEMORY NewMemory);
 
+LIST* DeSerializeDataList(OPAQUE_MEMORY* Memory, size_t ElementSize);
+OPAQUE_MEMORY* SerializeDataList(LIST* List, size_t ElementSize);
+
+size_t SerializedMemoryListSize(LIST* List);
+OPAQUE_MEMORY* SerializeMemoryList(LIST* List);
+LIST* DeSerializeMemoryList(OPAQUE_MEMORY* Memory);
+
 void FreeDataList(LIST* List);
 void FreeMemoryList(LIST* List);
 

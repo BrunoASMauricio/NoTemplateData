@@ -32,6 +32,26 @@ void TestPrimitiveData(void) {
         Index++;
     }
 
+    // Test Data serialized
+    OPAQUE_MEMORY* Memory = SerializeDataList(DataList, sizeof(uint16_t));
+
+    LIST* DeserializedList = DeSerializeDataList(Memory, sizeof(uint16_t));
+
+    Index = 0;
+    ITERATE_PRIMITIVE_DATA_TYPE(DeserializedList, uint64_t, StoredData) {
+        Assert((StoredData & 0xFFFF) == (TestVector[Index] & 0xFFFF));
+        Index++;
+    }
+
+    assert(DataList->Length == DeserializedList->Length);
+
+    OPAQUE_MEMORY* Reserialized = SerializeDataList(DataList, sizeof(uint16_t));
+
+    assert(0 == memcmp(Reserialized->Data, Memory->Data, Memory->Size));
+
+    FreeOpaqueMemory(Memory);
+    FreeOpaqueMemory(Reserialized);
+    FreeDataList(DeserializedList);
     FreeDataList(DataList);
 }
 
@@ -53,6 +73,7 @@ void TestMemoryData(void) {
         {4, TRUE, AllocGenericMemory(4)},
         {8, TRUE, AllocGenericMemory(8)}
     };
+
     // just copy the static stuff
     for (size_t i = 0; i < 4; i++) {
         CopyAVGMemory(DynTestVector[i].Data, StaticTestVector[i].Data,
@@ -79,6 +100,35 @@ void TestMemoryData(void) {
         Index = Index % 4;
     }
 
+    // Test Memory serialized
+    assert(SerializedMemoryListSize(MemoryList) ==
+           2 * (13 + sizeof(size_t) * 4));
+
+    OPAQUE_MEMORY* Memory = SerializeMemoryList(MemoryList);
+
+    LIST* DeserializedList = DeSerializeMemoryList(Memory);
+
+    assert(MemoryList->Length == DeserializedList->Length);
+
+    Index = 0;
+    ITERATE_MEMORY_TYPE(MemoryList, ListMemory) {
+        Assert(0 == memcmp(ListMemory.Data, StaticTestVector[Index].Data, ListMemory.Size));
+        Index++;
+        // Cycle back, we reuse the StaticTestVector
+        Index = Index % 4;
+    }
+
+    assert(SerializedMemoryListSize(MemoryList) ==
+           SerializedMemoryListSize(DeserializedList));
+
+    OPAQUE_MEMORY* Reserialized = SerializeMemoryList(DeserializedList);
+
+    assert(0 == memcmp(Reserialized->Data, Memory->Data, Memory->Size));
+
+
+    FreeOpaqueMemory(Reserialized);
+    FreeOpaqueMemory(Memory);
+    FreeMemoryList(DeserializedList);
     FreeMemoryList(MemoryList);
 }
 

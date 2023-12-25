@@ -59,6 +59,9 @@ TYPE* VAR = (TYPE*)AllocGenericMemory(sizeof(TYPE))
 
 
 //          Common data structures, their macros and funcitons
+
+void* DuplicateGenericMemory(void* Base, size_t size);
+
 typedef union{
     uint8_t     Val_uint8_t;
     uint16_t    Val_uint16_t;
@@ -72,6 +75,9 @@ typedef union{
     int         Val_int;
     float       Val_float;
     double      Val_double;
+
+    intptr_t    Val_intptr_t;
+    uintptr_t   Val_uintptr_t;
 
     void*       Val_pointer;
 }OPAQUE_DATA;
@@ -90,6 +96,7 @@ void SetupOpaqueMemory(OPAQUE_MEMORY* Memory, size_t Size);
 OPAQUE_MEMORY* AllocateOpaqueMemory(size_t Size);
 
 void ClearOpaqueMemory(OPAQUE_MEMORY* Memory);
+OPAQUE_MEMORY DuplicateIntoOpaqueMemory(void* Base, size_t Size);
 
 /* Free data in Memory
  * If Allocated = True, Datahas a freeable pointer
