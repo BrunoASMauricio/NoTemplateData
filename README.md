@@ -39,17 +39,9 @@ a specialized version (i.e. via templates)
 
 **Functionality switches**:
 
-* SANITY_CHECK - Enable some sanity checks. NULL pointers aren't checked here
+* ENABLE_SANITY_CHECKS - Enable some sanity checks. NULL pointers aren't checked here
                   either since segfaults are easy to pinpoint (in non embedded or
                   in simulators)
-
-**Wrappers**:
-
-* AllocGenericMemory - Wrapper for malloc
-* FreeGenericMemory  - Wrapper for free
-* Assert             - Wrapper for assert
-* CopyAVGMemory      - Wrapper for memcpy
-* CmpAVGMemory       - Wrapper for memcmp
 
 ## Some metrics
 
@@ -128,8 +120,8 @@ int main(int argc, char** argv) {
 #include "BasicList.h"
 
 int main(void){
-    LIST* IntMemoryList = NewList();
-    LIST* FloatMemoryList = NewList();
+    LIST* IntMemoryList = AllocateList();
+    LIST* FloatMemoryList = AllocateList();
 
     DataListInsert(IntMemoryList, GENERIC_DATA(int, 1));
     DataListInsert(IntMemoryList, GENERIC_DATA(int, 2));
