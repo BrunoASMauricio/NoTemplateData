@@ -1,5 +1,18 @@
 #include "Common.h"
 
+#ifdef ENABLE_SANITY_CHECKS
+
+#include <assert.h>
+void AssertSaneOpaqueMemory(OPAQUE_MEMORY* Opaque) {
+    Assert(Opaque != NULL);
+    if (Opaque->Allocated == TRUE) {
+        Assert(Opaque->Data != NULL);
+        Assert(Opaque->Size > 0);
+    }
+}
+
+#endif
+
 void* DuplicateGenericMemory(void* Base, size_t Size) {
     void* NewAddress = AllocGenericMemory(Size);
     CopyAVGMemory(NewAddress, Base, Size);

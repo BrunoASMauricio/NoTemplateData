@@ -9,7 +9,7 @@ void TestPrimitiveData(void);
 void TestMemoryData(void);
 
 void TestPrimitiveData(void) {
-    LIST* DataList = NewList();
+    LIST* DataList = AllocateList();
 
     uint64_t TestVector[] = {
         0x0123456789abcdef,
@@ -56,7 +56,7 @@ void TestPrimitiveData(void) {
 }
 
 void TestMemoryData(void) {
-    LIST* MemoryList = NewList();
+    LIST* MemoryList = AllocateList();
 
     // Setup some static memory
     OPAQUE_MEMORY StaticTestVector[] = {

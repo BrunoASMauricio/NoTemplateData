@@ -1,5 +1,5 @@
-#ifndef COMMONH_H
-#define COMMONH_H
+#ifndef COMMON_H
+#define COMMON_H
 
 #include <stdint.h>
 #include <stddef.h>
@@ -48,21 +48,28 @@ struct NAME
 #define ALLOC_STRUCT(TYPE, VAR) \
 TYPE* VAR = (TYPE*)AllocGenericMemory(sizeof(TYPE))
 
-#ifdef SANITY_CHECK
-#define SANITY_ASSERT(Condition) Assert(Condition)
+/* Toggleable sanity checks */
+#ifdef ENABLE_SANITY_CHECKS
+
+#define SANITY_CHECK(...) __VA_ARGS__
+
 #else
-#define SANITY_ASSERT(Condition)
+
+#define SANITY_CHECK(...)
+
 #endif
 
 //                      Compiler wrappers
 #define RUN_BEFORE_MAIN __attribute__((constructor))
-
 
 //          Common data structures, their macros and functions
 
 /* Copy the data provided into a new generic memory location */
 void* DuplicateGenericMemory(void* Base, size_t Size);
 
+/* Union for most of the useful data types.
+ * For optimization purposes, keep size under sizeof(void*)
+ */
 typedef union{
     uint8_t     Val_uint8_t;
     uint16_t    Val_uint16_t;
@@ -83,15 +90,22 @@ typedef union{
     void*       Val_pointer;
 }OPAQUE_DATA;
 
+/* Encapsulate static data into the appropriate OPAQUE_DATA field */
 #define GENERIC_DATA(Type, Data) \
 (OPAQUE_DATA){ .GLUE(Val_, Type) = Data}
 
-
+/* Struct for generic memory manipulation
+ * Allocated reports whether the `Data` shall be freed or not
+ */
 TYPE_STRUCT(OPAQUE_MEMORY){
     size_t  Size;
     BOOLEAN Allocated;
     void*   Data;
 };
+
+/* Encapsulate static data into an OPAQUE_MEMORY struct */
+#define GENERIC_MEMORY(Size, Data) \
+((OPAQUE_MEMORY){Size, FALSE, Data})
 
 /* Setup new memory for the provided `Memory`.
  * Allocates `Size` bytes from generic memory
@@ -110,8 +124,11 @@ OPAQUE_MEMORY DuplicateIntoOpaqueMemory(void* Base, size_t Size);
 /* Clear Opaque structure and release its' memory */
 void FreeOpaqueMemory(OPAQUE_MEMORY* Opaque);
 
-#define GENERIC_MEMORY(Size, Data) \
-((OPAQUE_MEMORY){Size, FALSE, Data})
+#ifdef ENABLE_SANITY_CHECKS
 
+/* Assert Opaque Memory is sane */
+void AssertSaneOpaqueMemory(OPAQUE_MEMORY* Opaque);
 
 #endif
+
+#endif /* COMMON_H */
