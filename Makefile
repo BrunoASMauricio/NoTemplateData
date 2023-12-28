@@ -27,8 +27,8 @@ SPACE       := ${null} ${null}
 CFLAGS      += -I$(SRC_DIR) -I$(subst ${SPACE}, -I,$(INC_DIRS))
 
 ifdef DEFS
-COMMA  = ,
-CFLAGS := $(CFLAGS) -D $(subst ${COMMA}, -D ,$(DEFS) )
+COMMA   = ,
+CFLAGS += -D $(subst ${COMMA}, -D ,$(DEFS) )
 endif
 
 # No defaults

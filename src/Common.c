@@ -6,47 +6,47 @@ void* DuplicateGenericMemory(void* Base, size_t Size) {
     return NewAddress;
 }
 
-void SetupOpaqueMemory(OPAQUE_MEMORY* Memory, size_t Size) {
-    Memory->Size = Size;
+void SetupOpaqueMemory(OPAQUE_MEMORY* Opaque, size_t Size) {
+    Opaque->Size = Size;
     if (Size > 0) {
-        Memory->Data = AllocGenericMemory(Memory->Size);
-        if (Memory->Data != NULL) {
-            Memory->Allocated = TRUE;
+        Opaque->Data = AllocGenericMemory(Opaque->Size);
+        if (Opaque->Data != NULL) {
+            Opaque->Allocated = TRUE;
             return;
         }
     }
     // error fall through
-    Memory->Data = NULL;
-    Memory->Allocated = FALSE;
+    Opaque->Data = NULL;
+    Opaque->Allocated = FALSE;
 
 }
 
 OPAQUE_MEMORY DuplicateIntoOpaqueMemory(void* Base, size_t Size) {
-    OPAQUE_MEMORY NewMemory;
-    NewMemory.Size = Size;
-    NewMemory.Data = DuplicateGenericMemory(Base, Size);
-    if (NewMemory.Data != NULL) {
-        NewMemory.Allocated = TRUE;
+    OPAQUE_MEMORY Opaque;
+    Opaque.Size = Size;
+    Opaque.Data = DuplicateGenericMemory(Base, Size);
+    if (Opaque.Data != NULL) {
+        Opaque.Allocated = TRUE;
     } else {
-        NewMemory.Allocated = FALSE;
+        Opaque.Allocated = FALSE;
     }
-    return NewMemory;
+    return Opaque;
 }
 
 OPAQUE_MEMORY* AllocateOpaqueMemory(size_t Size) {
-    ALLOC_STRUCT(OPAQUE_MEMORY, Memory);
-    SetupOpaqueMemory(Memory, Size);
-    return Memory;
+    ALLOC_STRUCT(OPAQUE_MEMORY, Opaque);
+    SetupOpaqueMemory(Opaque, Size);
+    return Opaque;
 }
 
-void ClearOpaqueMemory(OPAQUE_MEMORY* Memory) {
-    if (Memory->Allocated == TRUE) {
-        FeeGenericMemory(Memory->Data);
+void ClearOpaqueMemory(OPAQUE_MEMORY* Opaque) {
+    if (Opaque->Allocated == TRUE) {
+        FreeGenericMemory(Opaque->Data);
     }
-    Memory->Allocated = FALSE;
+    Opaque->Allocated = FALSE;
 }
 
-void FreeOpaqueMemory(OPAQUE_MEMORY* Memory) {
-    ClearOpaqueMemory(Memory);
-    FeeGenericMemory(Memory);
+void FreeOpaqueMemory(OPAQUE_MEMORY* Opaque) {
+    ClearOpaqueMemory(Opaque);
+    FreeGenericMemory(Opaque);
 }

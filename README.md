@@ -20,8 +20,8 @@ Cons:
 
 1. Ugly cast required (either `GENERIC_DATA(Type, Data)` or `(OPAQUE_DATA)
 { .GLUE(Val_, Type) = Data})`
-1. Increased user responsibility. No differing data type warning.
-2. Differences in size between the used union and the target data type lead to
+2. Increased user responsibility. No differing data type warning.
+3. Differences in size between the used union and the target data type lead to
 unused memory
 
 The reasoning behind this experiment is that a lot of data structures don't
@@ -46,7 +46,7 @@ a specialized version (i.e. via templates)
 **Wrappers**:
 
 * AllocGenericMemory - Wrapper for malloc
-* FeeGenericMemory   - Wrapper for free
+* FreeGenericMemory  - Wrapper for free
 * Assert             - Wrapper for assert
 * CopyAVGMemory      - Wrapper for memcpy
 * CmpAVGMemory       - Wrapper for memcmp

@@ -163,10 +163,10 @@ void FreeDataList(LIST* List) {
     PRIMITIVE_DATA_ELEMENT* Current = List->Head;
     while(Current != NULL) {
         PRIMITIVE_DATA_ELEMENT* Next = Current->Next;
-        FeeGenericMemory(Current);
+        FreeGenericMemory(Current);
         Current = Next;
     }
-    FeeGenericMemory(List);
+    FreeGenericMemory(List);
 }
 
 void FreeMemoryList(LIST* List) {
@@ -174,8 +174,8 @@ void FreeMemoryList(LIST* List) {
     while(Current != NULL) {
         MEMORY_DATA_ELEMENT* Next = Current->Next;
         ClearOpaqueMemory(&(Current->Memory));
-        FeeGenericMemory(Current);
+        FreeGenericMemory(Current);
         Current = Next;
     }
-    FeeGenericMemory(List);
+    FreeGenericMemory(List);
 }

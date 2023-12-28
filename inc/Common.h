@@ -10,9 +10,9 @@
 #define AllocGenericMemory(BaseAddress) malloc(BaseAddress)
 #endif
 
-#ifndef FeeGenericMemory
+#ifndef FreeGenericMemory
 #include <stdlib.h>
-#define FeeGenericMemory(BaseAddress) free(BaseAddress)
+#define FreeGenericMemory(BaseAddress) free(BaseAddress)
 #endif
 
 #ifndef Assert
@@ -58,9 +58,10 @@ TYPE* VAR = (TYPE*)AllocGenericMemory(sizeof(TYPE))
 #define RUN_BEFORE_MAIN __attribute__((constructor))
 
 
-//          Common data structures, their macros and funcitons
+//          Common data structures, their macros and functions
 
-void* DuplicateGenericMemory(void* Base, size_t size);
+/* Copy the data provided into a new generic memory location */
+void* DuplicateGenericMemory(void* Base, size_t Size);
 
 typedef union{
     uint8_t     Val_uint8_t;
@@ -92,16 +93,22 @@ TYPE_STRUCT(OPAQUE_MEMORY){
     void*   Data;
 };
 
-void SetupOpaqueMemory(OPAQUE_MEMORY* Memory, size_t Size);
+/* Setup new memory for the provided `Memory`.
+ * Allocates `Size` bytes from generic memory
+ */
+void SetupOpaqueMemory(OPAQUE_MEMORY* Opaque, size_t Size);
+
+/* Allocate a new OPAQUE_MEMORY and set it up */
 OPAQUE_MEMORY* AllocateOpaqueMemory(size_t Size);
 
-void ClearOpaqueMemory(OPAQUE_MEMORY* Memory);
+/* Free allocated data if (Allocated == True) */
+void ClearOpaqueMemory(OPAQUE_MEMORY* Opaque);
+
+/* Duplicate the memory in `Base` and wrap it with an Opaque memory */
 OPAQUE_MEMORY DuplicateIntoOpaqueMemory(void* Base, size_t Size);
 
-/* Free data in Memory
- * If Allocated = True, Datahas a freeable pointer
- */
-void FreeOpaqueMemory(OPAQUE_MEMORY* Memory);
+/* Clear Opaque structure and release its' memory */
+void FreeOpaqueMemory(OPAQUE_MEMORY* Opaque);
 
 #define GENERIC_MEMORY(Size, Data) \
 ((OPAQUE_MEMORY){Size, FALSE, Data})
