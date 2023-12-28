@@ -14,15 +14,15 @@ void AssertSaneOpaqueMemory(OPAQUE_MEMORY* Opaque) {
 #endif
 
 void* DuplicateGenericMemory(void* Base, size_t Size) {
-    void* NewAddress = AllocGenericMemory(Size);
-    CopyAVGMemory(NewAddress, Base, Size);
+    void* NewAddress = Malloc(Size);
+    Memcpy(NewAddress, Base, Size);
     return NewAddress;
 }
 
 void SetupOpaqueMemory(OPAQUE_MEMORY* Opaque, size_t Size) {
     Opaque->Size = Size;
     if (Size > 0) {
-        Opaque->Data = AllocGenericMemory(Opaque->Size);
+        Opaque->Data = Malloc(Opaque->Size);
         if (Opaque->Data != NULL) {
             Opaque->Allocated = TRUE;
             return;
@@ -54,12 +54,12 @@ OPAQUE_MEMORY* AllocateOpaqueMemory(size_t Size) {
 
 void ClearOpaqueMemory(OPAQUE_MEMORY* Opaque) {
     if (Opaque->Allocated == TRUE) {
-        FreeGenericMemory(Opaque->Data);
+        Free(Opaque->Data);
     }
     Opaque->Allocated = FALSE;
 }
 
 void FreeOpaqueMemory(OPAQUE_MEMORY* Opaque) {
     ClearOpaqueMemory(Opaque);
-    FreeGenericMemory(Opaque);
+    Free(Opaque);
 }

@@ -69,14 +69,14 @@ void TestMemoryData(void) {
     // Setup some dynamic memory
     OPAQUE_MEMORY DynTestVector[] = {
         {0},
-        {1, TRUE, AllocGenericMemory(1)},
-        {4, TRUE, AllocGenericMemory(4)},
-        {8, TRUE, AllocGenericMemory(8)}
+        {1, TRUE, Malloc(1)},
+        {4, TRUE, Malloc(4)},
+        {8, TRUE, Malloc(8)}
     };
 
     // just copy the static stuff
     for (size_t i = 0; i < 4; i++) {
-        CopyAVGMemory(DynTestVector[i].Data, StaticTestVector[i].Data,
+        Memcpy(DynTestVector[i].Data, StaticTestVector[i].Data,
                       StaticTestVector[i].Size);
     }
 

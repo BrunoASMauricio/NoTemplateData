@@ -141,7 +141,7 @@ LIST* DeSerializeDataList(OPAQUE_MEMORY* Memory, size_t ElementSize) {
     LIST* List = AllocateList();
     while (MemoryIndex < (uint8_t*)Memory->Data + Memory->Size) {
         // Assume same endianness
-        CopyAVGMemory(&Field, MemoryIndex, ElementSize);
+        Memcpy(&Field, MemoryIndex, ElementSize);
         DataListInsert(List, GENERIC_DATA(intptr_t, Field));
         MemoryIndex += ElementSize;
     }
@@ -170,7 +170,7 @@ LIST* DeSerializeMemoryList(OPAQUE_MEMORY* Memory) {
     LIST* List = AllocateList();
     while (MemoryIndex < (uint8_t*)Memory->Data + Memory->Size) {
         // Assume same endianness
-        CopyAVGMemory(&FieldSize, MemoryIndex, sizeof(FieldSize));
+        Memcpy(&FieldSize, MemoryIndex, sizeof(FieldSize));
         MemoryIndex += sizeof(FieldSize);
         MemoryListInsert(List, DuplicateIntoOpaqueMemory(MemoryIndex, FieldSize));
         MemoryIndex += FieldSize;
@@ -191,9 +191,9 @@ OPAQUE_MEMORY* SerializeMemoryList(LIST* List) {
 
     OPAQUE_MEMORY Element;
     ITERATE_MEMORY_TYPE(List, Element) {
-        CopyAVGMemory(MemoryIndex, &(Element.Size), sizeof(Element.Size));
+        Memcpy(MemoryIndex, &(Element.Size), sizeof(Element.Size));
         MemoryIndex += sizeof(Element.Size);
-        CopyAVGMemory(MemoryIndex, Element.Data, Element.Size);
+        Memcpy(MemoryIndex, Element.Data, Element.Size);
         MemoryIndex += Element.Size;
     }
     return Total;
@@ -205,7 +205,7 @@ void ClearDataList(LIST* List) {
     PRIMITIVE_DATA_ELEMENT* Current = List->Head;
     while(Current != NULL) {
         PRIMITIVE_DATA_ELEMENT* Next = Current->Next;
-        FreeGenericMemory(Current);
+        Free(Current);
         Current = Next;
     }
 }
@@ -217,7 +217,7 @@ void ClearMemoryList(LIST* List) {
     while(Current != NULL) {
         MEMORY_DATA_ELEMENT* Next = Current->Next;
         ClearOpaqueMemory(&(Current->Memory));
-        FreeGenericMemory(Current);
+        Free(Current);
         Current = Next;
     }
 }
@@ -226,12 +226,12 @@ void FreeDataList(LIST* List) {
     SANITY_CHECK( AssertSaneDataList(List) );
 
     ClearDataList(List);
-    FreeGenericMemory(List);
+    Free(List);
 }
 
 void FreeMemoryList(LIST* List) {
     SANITY_CHECK( AssertSaneMemoryList(List) );
 
     ClearMemoryList(List);
-    FreeGenericMemory(List);
+    Free(List);
 }

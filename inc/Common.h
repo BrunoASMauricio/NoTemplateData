@@ -3,32 +3,16 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <string.h>
+#include <stdlib.h>
 
 //                      stdlib.h wrappers
-#ifndef AllocGenericMemory
-#include <stdlib.h>
-#define AllocGenericMemory(BaseAddress) malloc(BaseAddress)
-#endif
-
-#ifndef FreeGenericMemory
-#include <stdlib.h>
-#define FreeGenericMemory(BaseAddress) free(BaseAddress)
-#endif
-
-#ifndef Assert
+#define Malloc(BaseAddress) malloc(BaseAddress)
+#define Free(BaseAddress) free(BaseAddress)
 #define Assert(Condition) assert(Condition)
-#endif
 
 //                      string.h wrappers
-#ifndef CopyAVGMemory
-#include <string.h>
-#define CopyAVGMemory memcpy
-#endif
-
-#ifndef CmpAVGMemory
-#include <string.h>
-#define CmpAVGMemory memcmp
-#endif
+#define Memcpy memcpy
 
 //                      type wrappers
 #ifndef BOOLEAN
@@ -36,7 +20,6 @@ typedef unsigned char BOOLEAN;
 #define TRUE  ((BOOLEAN)(1==1))
 #define FALSE ((BOOLEAN)(0==1))
 #endif
-
 
 //                      Helper macros
 #define GLUE(X, Y) X ## Y
@@ -46,17 +29,13 @@ typedef struct NAME NAME; \
 struct NAME
 
 #define ALLOC_STRUCT(TYPE, VAR) \
-TYPE* VAR = (TYPE*)AllocGenericMemory(sizeof(TYPE))
+TYPE* VAR = (TYPE*)Malloc(sizeof(TYPE))
 
 /* Toggleable sanity checks */
 #ifdef ENABLE_SANITY_CHECKS
-
 #define SANITY_CHECK(...) __VA_ARGS__
-
 #else
-
 #define SANITY_CHECK(...)
-
 #endif
 
 //                      Compiler wrappers
