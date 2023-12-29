@@ -24,6 +24,9 @@ typedef unsigned char BOOLEAN;
 //                      Helper macros
 #define GLUE(X, Y) X ## Y
 
+/* struct typedef which allows self-referencing without needing the struct
+ * keyword in the fields type
+ */
 #define TYPE_STRUCT(NAME) \
 typedef struct NAME NAME; \
 struct NAME
