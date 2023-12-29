@@ -14,15 +14,26 @@ void AssertSaneOpaqueMemory(OPAQUE_MEMORY* Opaque) {
 #endif
 
 void* DuplicateGenericMemory(void* Base, size_t Size) {
+    SANITY_CHECK( Assert(Base != NULL) );
+
     void* NewAddress = Malloc(Size);
+
+    SANITY_CHECK( Assert(NewAddress != NULL) );
+
     Memcpy(NewAddress, Base, Size);
     return NewAddress;
 }
 
 void SetupOpaqueMemory(OPAQUE_MEMORY* Opaque, size_t Size) {
+    SANITY_CHECK( Assert(Opaque != NULL) );
+    SANITY_CHECK( Assert(Opaque->Allocated != TRUE) );
+
     Opaque->Size = Size;
     if (Size > 0) {
         Opaque->Data = Malloc(Opaque->Size);
+
+        SANITY_CHECK( Assert(Opaque->Data != NULL) );
+
         if (Opaque->Data != NULL) {
             Opaque->Allocated = TRUE;
             return;
@@ -35,6 +46,8 @@ void SetupOpaqueMemory(OPAQUE_MEMORY* Opaque, size_t Size) {
 }
 
 OPAQUE_MEMORY DuplicateIntoOpaqueMemory(void* Base, size_t Size) {
+    SANITY_CHECK( Assert(Base != NULL) );
+
     OPAQUE_MEMORY Opaque;
     Opaque.Size = Size;
     Opaque.Data = DuplicateGenericMemory(Base, Size);
@@ -53,6 +66,8 @@ OPAQUE_MEMORY* AllocateOpaqueMemory(size_t Size) {
 }
 
 void ClearOpaqueMemory(OPAQUE_MEMORY* Opaque) {
+    SANITY_CHECK( Assert(Opaque != NULL) );
+
     if (Opaque->Allocated == TRUE) {
         Free(Opaque->Data);
     }
@@ -60,6 +75,8 @@ void ClearOpaqueMemory(OPAQUE_MEMORY* Opaque) {
 }
 
 void FreeOpaqueMemory(OPAQUE_MEMORY* Opaque) {
+    SANITY_CHECK( Assert(Opaque != NULL) );
+
     ClearOpaqueMemory(Opaque);
     Free(Opaque);
 }
