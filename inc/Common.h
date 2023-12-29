@@ -86,6 +86,9 @@ TYPE_STRUCT(OPAQUE_MEMORY){
 #define GENERIC_MEMORY(Size, Data) \
 ((OPAQUE_MEMORY){Size, FALSE, Data})
 
+#define STATIC_MEMORY(Size, ...) \
+{Size, FALSE, (uint8_t[]){__VA_ARGS__} }
+
 /* Setup new memory for the provided `Memory`.
  * Allocates `Size` bytes from generic memory
  */

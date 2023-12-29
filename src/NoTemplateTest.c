@@ -3,7 +3,6 @@
 #include <assert.h>
 
 #include "BasicList.h"
-#include "NoTemplateTest.h"
 
 void TestPrimitiveData(void);
 void TestMemoryData(void);
