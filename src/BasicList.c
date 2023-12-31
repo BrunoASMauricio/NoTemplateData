@@ -149,19 +149,6 @@ LIST* DeSerializeDataList(OPAQUE_MEMORY* Memory, size_t ElementSize) {
     return List;
 }
 
-size_t SerializedMemoryListSize(LIST* List) {
-    SANITY_CHECK( AssertSaneMemoryList(List) );
-
-    size_t TotalSize = 0;
-    OPAQUE_MEMORY Element;
-
-    ITERATE_MEMORY_TYPE(List, Element) {
-        TotalSize += sizeof(Element.Size);
-        TotalSize += Element.Size;
-    }
-    return TotalSize;
-}
-
 LIST* DeSerializeMemoryList(OPAQUE_MEMORY* Memory) {
     SANITY_CHECK( AssertSaneOpaqueMemory(Memory) );
 
@@ -181,7 +168,42 @@ LIST* DeSerializeMemoryList(OPAQUE_MEMORY* Memory) {
     return List;
 }
 
+static size_t SerializedMemoryListSize(LIST* List) {
+    SANITY_CHECK( AssertSaneMemoryList(List) );
+
+    size_t TotalSize = 0;
+    OPAQUE_MEMORY Element;
+
+    ITERATE_MEMORY_TYPE(List, Element) {
+        TotalSize += Element.Size;
+    }
+    return TotalSize;
+}
+
 OPAQUE_MEMORY* SerializeMemoryList(LIST* List) {
+    SANITY_CHECK( AssertSaneMemoryList(List) );
+
+    size_t DynamicSize;
+    OPAQUE_MEMORY* Total;
+    uint8_t* MemoryIndex;
+
+    DynamicSize = SerializedMemoryListSize(List);
+    DynamicSize += FIELD_SIZE(OPAQUE_MEMORY, Size) * List->Length;
+
+    Total = AllocateOpaqueMemory(DynamicSize);
+    MemoryIndex = (uint8_t*)Total->Data;
+
+    OPAQUE_MEMORY Element;
+    ITERATE_MEMORY_TYPE(List, Element) {
+        Memcpy(MemoryIndex, &(Element.Size), sizeof(Element.Size));
+        MemoryIndex += sizeof(Element.Size);
+        Memcpy(MemoryIndex, Element.Data, Element.Size);
+        MemoryIndex += Element.Size;
+    }
+    return Total;
+}
+
+OPAQUE_MEMORY* SerializeMemoryListElements(LIST* List) {
     SANITY_CHECK( AssertSaneMemoryList(List) );
 
     OPAQUE_MEMORY* Total = AllocateOpaqueMemory(SerializedMemoryListSize(List));
@@ -198,6 +220,7 @@ OPAQUE_MEMORY* SerializeMemoryList(LIST* List) {
     }
     return Total;
 }
+
 
 void ClearDataList(LIST* List) {
     SANITY_CHECK( AssertSaneDataList(List) );

@@ -71,13 +71,17 @@ LIST* DeSerializeDataList(OPAQUE_MEMORY* Memory, size_t ElementSize);
  */
 OPAQUE_MEMORY* SerializeDataList(LIST* List, size_t ElementSize);
 
-/* Calculate size of the List when serialized  */
-size_t SerializedMemoryListSize(LIST* List);
-
-/* Serialize `List` into an array of bytes that can be deserialized
+/* Serialize `List` into an array of bytes that can be deserialized with
+ *  `DeSerializeMemoryList`
  * Format: [ Element 1 Size | Element 1 Data | Element 2 Size .. ]
  */
 OPAQUE_MEMORY* SerializeMemoryList(LIST* List);
+
+/* Serialize `List` into an array of bytes that can't be deserialized with
+ *  `DeSerializeMemoryList`
+ * Format: [ Element 1 Data | Element 2 Data | Element 3 Data .. ]
+ */
+OPAQUE_MEMORY* SerializeMemoryListElements(LIST* List);
 
 /* Allocate and recover list from provided memory */
 LIST* DeSerializeMemoryList(OPAQUE_MEMORY* Memory);

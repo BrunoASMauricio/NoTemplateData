@@ -99,10 +99,6 @@ void TestMemoryData(void) {
         Index = Index % 4;
     }
 
-    // Test Memory serialized
-    assert(SerializedMemoryListSize(MemoryList) ==
-           2 * (13 + sizeof(size_t) * 4));
-
     OPAQUE_MEMORY* Memory = SerializeMemoryList(MemoryList);
 
     LIST* DeserializedList = DeSerializeMemoryList(Memory);
@@ -117,13 +113,10 @@ void TestMemoryData(void) {
         Index = Index % 4;
     }
 
-    assert(SerializedMemoryListSize(MemoryList) ==
-           SerializedMemoryListSize(DeserializedList));
-
     OPAQUE_MEMORY* Reserialized = SerializeMemoryList(DeserializedList);
 
+    assert(Memory->Size == Reserialized->Size);
     assert(0 == memcmp(Reserialized->Data, Memory->Data, Memory->Size));
-
 
     FreeOpaqueMemory(Reserialized);
     FreeOpaqueMemory(Memory);

@@ -27,9 +27,9 @@ typedef unsigned char BOOLEAN;
 /* struct typedef which allows self-referencing without needing the struct
  * keyword in the fields type
  */
-#define TYPE_STRUCT(NAME) \
-typedef struct NAME NAME; \
-struct NAME
+#define TYPE_STRUCT(Name) \
+typedef struct Name Name; \
+struct Name
 
 #define ALLOC_STRUCT(TYPE, VAR) \
 TYPE* VAR = (TYPE*)Malloc(sizeof(TYPE))
@@ -43,6 +43,7 @@ TYPE* VAR = (TYPE*)Malloc(sizeof(TYPE))
 
 //                      Compiler wrappers
 #define RUN_BEFORE_MAIN __attribute__((constructor))
+#define FIELD_SIZE(Struct, Field) (sizeof(((Struct*)0)->Field))
 
 //          Common data structures, their macros and functions
 
