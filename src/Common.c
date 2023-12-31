@@ -61,6 +61,7 @@ OPAQUE_MEMORY DuplicateIntoOpaqueMemory(void* Base, size_t Size) {
 
 OPAQUE_MEMORY* AllocateOpaqueMemory(size_t Size) {
     ALLOC_STRUCT(OPAQUE_MEMORY, Opaque);
+    Opaque->Allocated = FALSE;
     SetupOpaqueMemory(Opaque, Size);
     return Opaque;
 }
